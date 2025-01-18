@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:multi_language_currency_app/screens/receipt_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../model/CurrencyModel.dart';
@@ -28,9 +29,8 @@ class HomeScreen extends StatelessWidget {
       body: Consumer2<LanguageModel, CurrencyModel>(
         builder: (context, languageModel, currencyModel, child) {
           return Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(12.0),
             child: SingleChildScrollView(
-              // Wrap the content in a SingleChildScrollView
               child: Column(
                 children: [
                   _buildProductGrid(
@@ -99,55 +99,60 @@ class HomeScreen extends StatelessWidget {
         'name': _getProductName(language, 0),
         'description': _getProductDescription(language, 0),
         'image': 'assets/images/images (2).jpg',
-        'price': _getProductPrice(currency, 0),
+        'basePrice': 10.0, // Base price in USD
       },
       {
         'name': _getProductName(language, 1),
         'description': _getProductDescription(language, 1),
         'image': 'assets/images/download (1).jpg',
-        'price': _getProductPrice(currency, 1),
+        'basePrice': 15.0, // Base price in USD
       },
       {
         'name': _getProductName(language, 2),
         'description': _getProductDescription(language, 2),
         'image': 'assets/images/images (1).jpg',
-        'price': _getProductPrice(currency, 2),
+        'basePrice': 20.0, // Base price in USD
       },
       {
         'name': _getProductName(language, 3),
         'description': _getProductDescription(language, 3),
         'image': 'assets/images/images.jpg',
-        'price': _getProductPrice(currency, 3),
+        'basePrice': 25.0, // Base price in USD
       },
     ];
 
     return GridView.builder(
-      shrinkWrap:
-          true, // Make sure the grid view only takes up as much space as needed
-      physics:
-          const NeverScrollableScrollPhysics(), // Disable scrolling within the grid view
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16.0,
-        mainAxisSpacing:
-            30.0, // Increased spacing between the boxes along the Y-axis
-        childAspectRatio: 0.50, // Increased height for the boxes
+        crossAxisCount: 1,
+        crossAxisSpacing: 12.0,
+        mainAxisSpacing: 20.0,
+        childAspectRatio: 0.90,
       ),
       itemCount: products.length,
       itemBuilder: (context, index) {
         final product = products[index];
+        final price =
+            _getProductPrice(currency, product['basePrice']! as double);
         return _buildProductCard(
-          product['name']!,
-          product['description']!,
-          product['price']!,
-          product['image']!,
+          context,
+          product['name']! as String,
+          product['description']! as String,
+          price,
+          product['image']! as String,
         );
       },
     );
   }
 
   Widget _buildProductCard(
-      String name, String description, String price, String image) {
+    BuildContext context,
+    String name,
+    String description,
+    String price,
+    String image,
+  ) {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
@@ -160,21 +165,21 @@ class HomeScreen extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(15.0),
             child:
-                Image.asset(image, fit: BoxFit.cover, height: 150, width: 170),
+                Image.asset(image, fit: BoxFit.cover, height: 160, width: 280),
           ),
           Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(8.0),
             child: Text(
               name,
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 29.0),
             child: Text(
               description,
               style: const TextStyle(fontSize: 14, color: Colors.grey),
@@ -196,13 +201,19 @@ class HomeScreen extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: ElevatedButton(
-              onPressed: () {},
-              child: const Text('Add to Cart'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ReceiptScreen()),
+                );
+              },
               style: ElevatedButton.styleFrom(
-                minimumSize: const Size(120, 40),
-                backgroundColor: Colors.blueAccent,
-                foregroundColor: Colors.white,
+                minimumSize: const Size(190, 40),
+                backgroundColor: Colors.orangeAccent,
+                foregroundColor: Colors.black,
               ),
+              child: const Text('Buy'),
             ),
           ),
         ],
@@ -265,73 +276,59 @@ class HomeScreen extends StatelessWidget {
         'ایک ٹھنڈا گرافک ڈیزائن والی ٹی شرٹ۔'
       ],
       [
-        'Comfortable hoodie perfect for cool weather.',
-        'Sudadera cómoda, perfecta para el clima fresco.',
-        'Sweat à capuche confortable, parfait pour le temps frais.',
-        'Bequemes Kapuzensweatshirt, perfekt für kühles Wetter.',
-        'Felpa com cappuccio comoda, perfetta per il clima fresco.',
-        'ठंडे मौसम के लिए आदर्श आरामदायक हुडी।',
-        'ٹھنڈی موسم کے لئے مثالی آرام دہ ہوڈی۔'
+        'Comfortable hoodie for all seasons.',
+        'Sudadera cómoda para todas las estaciones.',
+        'Sweat à capuche confortable pour toutes les saisons.',
+        'Bequeme Kapuzenjacke für alle Jahreszeiten.',
+        'Felpa comoda per tutte le stagioni.',
+        'सभी मौसमों के लिए आरामदायक हुडी।',
+        'تمام موسموں کے لیے آرام دہ ہوڈی۔'
       ],
       [
-        'Warm jacket for colder weather.',
-        'Chaqueta cálida para climas fríos.',
-        'Veste chaude pour temps froid.',
-        'Warme Jacke für kaltes Wetter.',
-        'Giacca calda per il freddo.',
-        'ठंडे मौसम के लिए गर्म जैकेट।',
-        'ٹھنڈی موسم کے لیے گرم جیکٹ۔'
+        'Stylish jacket for cold weather.',
+        'Chaqueta elegante para clima frío.',
+        'Veste élégante pour temps froid.',
+        'Stilvolle Jacke für kaltes Wetter.',
+        'Giacca elegante per il freddo.',
+        'ठंडे मौसम के लिए स्टाइलिश जैकेट।',
+        'سرد موسم کے لیے اسٹائلش جیکٹ۔'
       ],
     ];
     return descriptions[index][_getLanguageIndex(language)];
   }
 
-  String _getProductPrice(String currency, int index) {
-    final prices = [
-      ['\$25.99', '€22.99', '£20.99', '€24.99', '€23.99', '₹1999', '₨3000'],
-      ['\$19.99', '€18.99', '£16.99', '€17.99', '€16.99', '₹1499', '₨2500'],
-      ['\$39.99', '€35.99', '£30.99', '€33.99', '€32.99', '₹3299', '₨5000'],
-      ['\$49.99', '€45.99', '£40.99', '€44.99', '€43.99', '₹4299', '₨6500'],
-    ];
-    return prices[index][_getCurrencyIndex(currency)];
+  String _getProductPrice(String currency, double basePrice) {
+    final rates = {
+      'USD': 1.0,
+      'EUR': 0.85,
+      'GBP': 0.75,
+      'AUD': 1.5,
+      'CAD': 1.4,
+      'INR': 75.0,
+      'PKR': 150.0,
+    };
+
+    final exchangeRate = rates[currency] ?? 1.0;
+    final convertedPrice = basePrice * exchangeRate;
+    return '$currency ${convertedPrice.toStringAsFixed(2)}';
   }
 
   int _getLanguageIndex(String language) {
-    switch (language) {
-      case 'Français':
-        return 1;
-      case 'Español':
-        return 2;
-      case 'Deutsch':
-        return 3;
-      case 'Italiano':
-        return 4;
-      case 'हिंदी':
-        return 5;
-      case 'اردو':
-        return 6;
-      default:
-        return 0;
-    }
+    const languages = [
+      'English',
+      'Français',
+      'Español',
+      'Deutsch',
+      'Italiano',
+      'हिंदी',
+      'اردو'
+    ];
+    return languages.indexOf(language);
   }
 
   int _getCurrencyIndex(String currency) {
-    switch (currency) {
-      case 'EUR':
-        return 1;
-      case 'GBP':
-        return 2;
-      case 'AUD':
-        return 3;
-      case 'CAD':
-        return 4;
-      case 'INR':
-        return 5;
-      case 'PKR':
-        return 6;
-      default:
-        return 0;
-    }
+    const currencies = ['USD', 'EUR', 'GBP', 'AUD', 'CAD', 'INR', 'PKR'];
+    return currencies.indexOf(currency);
   }
 }
 
